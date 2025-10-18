@@ -20,12 +20,6 @@ config :crm, CrmWeb.Endpoint,
   secret_key_base: "9Q+ocDDIAnp9Ib4pbD5N6YRAqwwXuMpTcWNqE7f0bHqh8MUJsuCH4G+7GvxpGZEf",
   server: false
 
-# In test we don't send emails
-config :crm, Crm.Mailer, adapter: Swoosh.Adapters.Test
-
-# Disable swoosh api client as it is only required for production adapters
-config :swoosh, :api_client, false
-
 # Print only warnings and errors during test
 config :logger, level: :warning
 

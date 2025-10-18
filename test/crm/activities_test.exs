@@ -5,7 +5,7 @@ defmodule Crm.ActivitiesTest do
   alias Crm.{Repo, Leads, Stages}
   alias Crm.Sales.{Lead, Stage}
 
-  describe "auto_stage_transition/2" do
+  describe "automatic stage transitions" do
     setup do
       stages = [
         %{name: "new", label: "New", order: 0, active: true},
