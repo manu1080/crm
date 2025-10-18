@@ -1,0 +1,114 @@
+<div class="min-h-screen gh-canvas px-6 py-8">
+  <div class="gh-form-container">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="gh-form-title mb-0 pb-0 border-b-0">{@page_title}</h1>
+      
+      <.link navigate={~p"/leads"} class="gh-btn gh-btn-secondary">
+        <.icon name="hero-x-mark" class="w-4 h-4" /> Close
+      </.link>
+    </div>
+    
+    <.form for={@form} phx-change="validate" phx-submit="save">
+      <div class="gh-form-group">
+        <label class="gh-form-label gh-form-label-required">Name</label>
+        <.input
+          field={@form[:name]}
+          type="text"
+          class="gh-form-input"
+          placeholder="Enter lead name"
+          required
+        />
+      </div>
+      
+      <div class="gh-form-group">
+        <label class="gh-form-label gh-form-label-required">Email</label>
+        <.input
+          field={@form[:email]}
+          type="email"
+          class="gh-form-input"
+          placeholder="lead@example.com"
+          required
+        />
+      </div>
+      
+      <div class="gh-form-group">
+        <label class="gh-form-label">Phone</label>
+        <.input
+          field={@form[:phone]}
+          type="text"
+          class="gh-form-input"
+          placeholder="+34600000000"
+        />
+        <p class="gh-form-hint">Optional. Must start with + and contain only numbers</p>
+      </div>
+      
+      <div class="gh-form-group">
+        <label class="gh-form-label">Source</label>
+        <select name="lead[source_id]" class="gh-form-select" value={@form[:source_id].value}>
+          <option value="">Select a source</option>
+          <%= for source <- @sources do %>
+            <option value={source.id} selected={@form[:source_id].value == source.id}>
+              {String.capitalize(source.name)}
+            </option>
+          <% end %>
+        </select>
+        <p class="gh-form-hint">Where did this lead come from?</p>
+      </div>
+      
+      <div class="gh-form-group">
+        <label class="gh-form-label">Stage</label>
+        <select name="lead[stage_id]" class="gh-form-select" value={@form[:stage_id].value}>
+          <option value="">Select a stage</option>
+          <%= for stage <- @stages do %>
+            <option value={stage.id} selected={@form[:stage_id].value == stage.id}>
+              {stage.label}
+            </option>
+          <% end %>
+        </select>
+        <p class="gh-form-hint">Current stage in the sales pipeline</p>
+      </div>
+      
+      <div class="gh-form-group">
+        <label class="gh-form-label">Owner</label>
+        <select name="lead[owner]" class="gh-form-select">
+          <option value="">Select an owner</option>
+          
+          <option value="Ana García">Ana García</option>
+          
+          <option value="Carlos López">Carlos López</option>
+          
+          <option value="María Rodríguez">María Rodríguez</option>
+          
+          <option value="Juan Pérez">Juan Pérez</option>
+        </select>
+        <p class="gh-form-hint">Assign a team member to this lead</p>
+      </div>
+      
+      <div class="gh-form-group">
+        <label class="gh-form-label">Budget (€)</label>
+        <.input
+          field={@form[:budget]}
+          type="number"
+          class="gh-form-input"
+          step="1000"
+          placeholder="50000"
+        />
+        <p class="gh-form-hint">Estimated investment amount</p>
+      </div>
+      
+      <div class="gh-form-group">
+        <label class="gh-form-checkbox-label">
+          <.input field={@form[:starred]} type="checkbox" class="gh-form-checkbox" />
+          <span class="gh-form-label mb-0">Mark as starred</span>
+        </label>
+        <p class="gh-form-hint ml-7">Starred leads appear at the top</p>
+      </div>
+      
+      <div class="gh-form-actions">
+        <button type="submit" class="gh-btn gh-btn-primary">
+          <.icon name="hero-check" class="w-4 h-4" /> Save Lead
+        </button> <.link navigate={~p"/leads"} class="gh-btn gh-btn-secondary">Cancel</.link>
+      </div>
+    </.form>
+  </div>
+</div>

@@ -1,0 +1,231 @@
+<div class="gh-page">
+  <!-- Header -->
+  <div class="gh-header px-6 py-4">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="gh-title flex items-center gap-2">
+          <.icon name="hero-chart-bar" class="gh-icon" />
+          Sales Dashboard
+        </h1>
+        <p class="gh-subtitle">Real-time analytics and metrics</p>
+      </div>
+      <.link navigate={~p"/leads"} class="gh-btn gh-btn-secondary">
+        <.icon name="hero-arrow-left" class="w-4 h-4" /> Back to Pipeline
+      </.link>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto">
+    <!-- Filters -->
+    <div class="gh-metric-card mb-6">
+      <form phx-change="filter" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Date Range Filter -->
+        <div>
+          <label class="block gh-metric-label mb-2">
+            <.icon name="hero-calendar" class="w-4 h-4 inline" />
+            Date Range
+          </label>
+          <select name="filters[date_range]" class="gh-input w-full">
+            <option value="7" selected={@filters.date_range == "7"}>Last 7 days</option>
+            <option value="30" selected={@filters.date_range == "30"}>Last 30 days</option>
+            <option value="90" selected={@filters.date_range == "90"}>Last 90 days</option>
+            <option value="180" selected={@filters.date_range == "180"}>Last 6 months</option>
+            <option value="365" selected={@filters.date_range == "365"}>Last year</option>
+          </select>
+        </div>
+
+        <!-- Owner Filter -->
+        <div>
+          <label class="block gh-metric-label mb-2">
+            <.icon name="hero-user" class="w-4 h-4 inline" />
+            Owner
+          </label>
+          <select name="filters[owner]" class="gh-input w-full">
+            <option value="all" selected={@filters.owner == "all"}>All Owners</option>
+            <%= for owner <- @owners do %>
+              <option value={owner} selected={@filters.owner == owner}><%= owner %></option>
+            <% end %>
+          </select>
+        </div>
+
+        <!-- Source Filter -->
+        <div>
+          <label class="block gh-metric-label mb-2">
+            <.icon name="hero-tag" class="w-4 h-4 inline" />
+            Source
+          </label>
+          <select name="filters[source]" class="gh-input w-full">
+            <option value="all" selected={@filters.source == "all"}>All Sources</option>
+            <%= for source <- @sources do %>
+              <option value={source.id} selected={@filters.source == to_string(source.id)}>
+                <%= String.capitalize(source.name) %>
+              </option>
+            <% end %>
+          </select>
+        </div>
+      </form>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <!-- Win Rate Card -->
+      <div class="gh-metric-card">
+        <div class="gh-metric-label">Win Rate</div>
+        <div class="gh-metric-value success">
+          <%= @metrics.win_rate.win_rate %>%
+        </div>
+        <div class="gh-metric-subtitle">
+          <%= @metrics.win_rate.won %> won / <%= @metrics.win_rate.total %> total leads
+        </div>
+      </div>
+
+      <!-- Active Leads Card -->
+      <div class="gh-metric-card">
+        <div class="gh-metric-label">Active Leads (30 days)</div>
+        <div class="gh-metric-value info">
+          <%= @metrics.active_vs_inactive.active_percentage %>%
+        </div>
+        <div class="gh-metric-subtitle">
+          <%= @metrics.active_vs_inactive.active %> active / <%= @metrics.active_vs_inactive.total %> total
+        </div>
+      </div>
+
+      <!-- Total Leads Card -->
+      <div class="gh-metric-card">
+        <div class="gh-metric-label">Total Leads</div>
+        <div class="gh-metric-value purple">
+          <%= @metrics.win_rate.total %>
+        </div>
+        <div class="gh-metric-subtitle">
+          All time
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <!-- Leads Per Day Chart -->
+      <div class="gh-chart-container">
+        <div class="gh-chart-header">
+          <h2 class="gh-chart-title">Leads Per Day (Last 30 Days)</h2>
+        </div>
+        <div class="gh-chart-body">
+          <%= if length(@metrics.leads_per_day) > 0 do %>
+            <div class="w-full overflow-x-auto">
+              <%= render_leads_per_day_chart(@metrics.leads_per_day) %>
+            </div>
+          <% else %>
+            <div class="text-center gh-text-secondary py-8">No data available</div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Conversion by Stage Chart -->
+      <div class="gh-chart-container">
+        <div class="gh-chart-header">
+          <h2 class="gh-chart-title">Conversion by Stage</h2>
+        </div>
+        <div class="gh-chart-body">
+          <%= if length(@metrics.conversion_by_stage) > 0 do %>
+            <div class="w-full overflow-x-auto">
+              <%= render_conversion_by_stage_chart(@metrics.conversion_by_stage) %>
+            </div>
+          <% else %>
+            <div class="text-center gh-text-secondary py-8">No data available</div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Conversion by Source Chart -->
+      <div class="gh-chart-container">
+        <div class="gh-chart-header">
+          <h2 class="gh-chart-title">Performance by Source</h2>
+        </div>
+        <div class="gh-chart-body">
+          <%= if length(@metrics.conversion_by_source) > 0 do %>
+            <div class="w-full overflow-x-auto">
+              <%= render_conversion_by_source_chart(@metrics.conversion_by_source) %>
+            </div>
+          <% else %>
+            <div class="text-center gh-text-secondary py-8">No data available</div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Activities per User Chart -->
+      <div class="gh-chart-container">
+        <div class="gh-chart-header">
+          <h2 class="gh-chart-title">Activities per User</h2>
+        </div>
+        <div class="gh-chart-body">
+          <%= if length(@metrics.activities_per_user) > 0 do %>
+            <div class="w-full overflow-x-auto">
+              <%= render_activities_per_user_chart(@metrics.activities_per_user) %>
+            </div>
+          <% else %>
+            <div class="text-center gh-text-secondary py-8">No data available</div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Tables -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Stage Breakdown Table -->
+      <div class="gh-chart-container">
+        <div class="gh-chart-header">
+          <h2 class="gh-chart-title">Stage Breakdown</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="gh-table">
+            <thead>
+              <tr>
+                <th>Stage</th>
+                <th class="text-right">Count</th>
+                <th class="text-right">Percentage</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for {stage, count, percentage} <- @metrics.conversion_by_stage do %>
+                <tr>
+                  <td class="font-medium"><%= stage %></td>
+                  <td class="text-right"><%= count %></td>
+                  <td class="text-right gh-text-secondary"><%= percentage %>%</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Source Performance Table -->
+      <div class="gh-chart-container">
+        <div class="gh-chart-header">
+          <h2 class="gh-chart-title">Source Performance</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="gh-table">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th class="text-right">Total</th>
+                <th class="text-right">Won</th>
+                <th class="text-right">Win Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              <%= for {source, total, won, win_rate} <- @metrics.conversion_by_source do %>
+                <tr>
+                  <td class="font-medium capitalize"><%= source %></td>
+                  <td class="text-right"><%= total %></td>
+                  <td class="text-right"><%= won %></td>
+                  <td class="text-right gh-text-secondary"><%= win_rate %>%</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

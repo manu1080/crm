@@ -1,0 +1,210 @@
+<div class="min-h-screen gh-canvas">
+  <!-- Header -->
+  <div class="gh-header">
+    <div class="flex items-center justify-between px-6 py-4">
+      <div>
+        <h1 class="text-2xl font-semibold gh-text-primary">Sales Pipeline</h1>
+        
+        <p class="gh-text-secondary text-sm mt-1">Manage your leads through the sales funnel</p>
+      </div>
+      
+      <div class="flex gap-3">
+        <a
+          href={~p"/export/leads.csv?#{export_query_params(@filters)}"}
+          class="gh-btn gh-btn-secondary flex items-center gap-2"
+          download
+        >
+          <.icon name="hero-arrow-down-tray" class="w-4 h-4" /> Export CSV
+        </a>
+        
+        <.link
+          navigate={~p"/dashboard"}
+          class="gh-btn gh-btn-secondary flex items-center gap-2"
+        >
+          <.icon name="hero-chart-bar" class="w-4 h-4" /> Dashboard
+        </.link>
+        
+        <.link
+          navigate={~p"/activities/new"}
+          class="gh-btn gh-btn-secondary flex items-center gap-2"
+        >
+          <.icon name="hero-clock" class="w-4 h-4" /> New Activity
+        </.link>
+        
+        <.link
+          navigate={~p"/leads/new"}
+          class="gh-btn gh-btn-primary flex items-center gap-2"
+        >
+          <.icon name="hero-plus" class="w-4 h-4" /> New Lead
+        </.link>
+      </div>
+    </div>
+  </div>
+  
+  <div class="px-6 py-6">
+    <!-- Filters -->
+    <div class="gh-surface gh-border rounded-lg p-4 mb-6 border">
+      <form phx-change="filter" class="flex gap-4 items-end">
+        <div class="flex-1">
+          <label class="block gh-text-secondary text-sm font-medium mb-2">Owner</label>
+          <select name="owner" class="gh-input" value={@filters.owner || ""}>
+            <option value="">All Owners</option>
+            <%= for owner <- @owners do %>
+              <option value={owner} selected={@filters.owner == owner}>{owner}</option>
+            <% end %>
+          </select>
+        </div>
+        
+        <div class="flex-1">
+          <label class="block gh-text-secondary text-sm font-medium mb-2">Source</label>
+          <select name="source" class="gh-input" value={@filters.source || ""}>
+            <option value="">All Sources</option>
+            <%= for source <- @sources do %>
+              <option value={source.name} selected={@filters.source == source.name}>
+                {String.capitalize(source.name)}
+              </option>
+            <% end %>
+          </select>
+        </div>
+        
+        <div class="flex items-center gap-2 pb-2">
+          <input
+            type="checkbox"
+            name="starred"
+            value="true"
+            checked={@filters.starred}
+            class="w-4 h-4 rounded gh-border gh-canvas"
+          />
+          <label class="gh-text-primary text-sm">Starred only</label>
+        </div>
+      </form>
+    </div>
+    <!-- Kanban Board -->
+    <div class="overflow-x-auto pb-4">
+      <div class="flex gap-4 min-w-max">
+        <%= for stage <- @stages do %>
+          <div class="flex-shrink-0 w-80">
+            <div class="gh-column rounded-lg">
+              <!-- Stage Header -->
+              <div class="gh-column-header flex items-center justify-between px-4 py-3">
+                <h3 class="font-semibold text-sm gh-text-primary">
+                  {stage_label(stage, @stages_list)}
+                </h3>
+                
+                <span class="gh-badge px-2 py-1 rounded-full text-xs font-medium">
+                  {Map.get(@stage_counts, stage, 0)}
+                </span>
+              </div>
+              <!-- Lead Cards Container (Drop Zone) -->
+              <div
+                class="p-3 space-y-2 min-h-[400px] transition-all"
+                phx-hook="DropZone"
+                id={"dropzone-#{stage}"}
+                data-stage={stage}
+              >
+                <%= for lead <- Map.get(@leads_by_stage, stage, []) do %>
+                  <div
+                    class="gh-card rounded-lg p-3 group"
+                    draggable="true"
+                    phx-hook="DragItem"
+                    id={"lead-#{lead.id}"}
+                    data-id={lead.id}
+                  >
+                    <!-- Lead Header -->
+                    <div class="flex items-start justify-between mb-2">
+                      <div class="flex-1 flex items-center gap-1">
+                        <.link
+                          navigate={~p"/leads/#{lead.id}"}
+                          class="text-sm font-medium gh-text-accent hover:underline"
+                        >
+                          {lead.name}
+                        </.link>
+                        <%= if lead.starred do %>
+                          <button
+                            phx-click="toggle_starred"
+                            phx-value-id={lead.id}
+                            class="text-yellow-500 hover:scale-110 transition cursor-pointer"
+                            title="Remove from starred"
+                          >
+                            ⭐
+                          </button>
+                        <% else %>
+                          <button
+                            phx-click="toggle_starred"
+                            phx-value-id={lead.id}
+                            class="gh-text-tertiary hover:text-yellow-500 transition opacity-0 group-hover:opacity-100 cursor-pointer"
+                            title="Add to starred"
+                          >
+                            ☆
+                          </button>
+                        <% end %>
+                      </div>
+                      
+                      <button
+                        phx-click="toggle_starred"
+                        phx-value-id={lead.id}
+                        class="gh-text-secondary hover:text-yellow-500 transition cursor-pointer"
+                        title={if lead.starred, do: "Remove from starred", else: "Add to starred"}
+                      >
+                        <.icon
+                          name={if lead.starred, do: "hero-star-solid", else: "hero-star"}
+                          class="w-4 h-4"
+                        />
+                      </button>
+                    </div>
+                    <!-- Lead Details -->
+                    <div class="text-xs gh-text-secondary space-y-1.5">
+                      <div class="flex items-center gap-1.5">
+                        <.icon name="hero-envelope" class="w-3.5 h-3.5" />
+                        <span class="truncate">{lead.email}</span>
+                      </div>
+                      
+                      <%= if lead.budget do %>
+                        <div class="flex items-center gap-1.5">
+                          <.icon name="hero-currency-euro" class="w-3.5 h-3.5" />
+                          <span class="font-medium gh-text-primary">
+                            {format_budget(lead.budget)}
+                          </span>
+                        </div>
+                      <% end %>
+                      
+                      <div class="flex items-center gap-1.5">
+                        <.icon name="hero-tag" class="w-3.5 h-3.5" />
+                        <span class="capitalize">
+                          {if lead.source_rel, do: lead.source_rel.name, else: "Unknown"}
+                        </span>
+                      </div>
+                    </div>
+                    <!-- Owner & Date -->
+                    <div class="flex items-center justify-between mt-3 pt-2 gh-divider">
+                      <div class="flex items-center gap-2">
+                        <%= if lead.owner do %>
+                          <div class="w-5 h-5 rounded-full gh-canvas flex items-center justify-center">
+                            <span class="text-[10px] gh-text-secondary font-medium">
+                              {get_initials(lead.owner)}
+                            </span>
+                          </div>
+                           <span class="text-xs gh-text-secondary">{lead.owner}</span>
+                        <% else %>
+                          <span class="text-xs gh-text-tertiary">Unassigned</span>
+                        <% end %>
+                      </div>
+                      
+                      <span class="text-xs gh-text-tertiary">
+                        {format_date(lead.last_activity_at)}
+                      </span>
+                    </div>
+                    <!-- Drag indicator -->
+                    <div class="mt-2 text-center opacity-0 group-hover:opacity-100 transition">
+                      <span class="text-xs gh-text-tertiary">⋮⋮</span>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
