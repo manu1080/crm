@@ -7,13 +7,13 @@ defmodule CrmWeb.UserLoginLive do
       <div class="gh-form-container max-w-md w-full">
         <div class="text-center mb-8">
           <h1 class="gh-form-title">Sign in to CRM</h1>
-          
+
           <p class="gh-text-secondary mt-2">
             Don't have an account? <.link navigate={~p"/register"} class="gh-link">Sign up</.link>
             for an account now.
           </p>
         </div>
-        
+
         <.form for={@form} id="login_form" action={~p"/login"} phx-update="ignore">
           <div class="gh-form-group">
             <label class="gh-form-label gh-form-label-required">Email</label>
@@ -25,7 +25,7 @@ defmodule CrmWeb.UserLoginLive do
               required
             />
           </div>
-          
+
           <div class="gh-form-group">
             <label class="gh-form-label gh-form-label-required">Password</label>
             <.input
@@ -36,14 +36,14 @@ defmodule CrmWeb.UserLoginLive do
               required
             />
           </div>
-          
+
           <div class="gh-form-group">
             <label class="flex items-center gap-2 cursor-pointer">
               <.input field={@form[:remember_me]} type="checkbox" class="gh-checkbox" />
               <span class="gh-text-secondary text-sm">Keep me logged in</span>
             </label>
           </div>
-          
+
           <div class="gh-form-actions">
             <button
               type="submit"
