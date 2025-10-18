@@ -54,7 +54,7 @@ Now visit [`localhost:4000`](http://localhost:4000) from your browser.
 This project includes comprehensive documentation covering different aspects of the CRM:
 
 ### � Security & Access Control
-- **[Role Permissions](ROLE_PERMISSIONS.md)** - User roles, permission matrix, and access control rules
+- **[Role Permissions](role_permission.md)** - User roles, permission matrix, and access control rules
 
 ### �📋 Business Rules
 - **[Business Rules](business%20rules.md)** - Complete sales pipeline stages, lead activities, and automatic stage transitions
