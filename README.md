@@ -10,6 +10,8 @@ A lightweight CRM for managing investment leads through a sales funnel, built wi
 - **Real-time Updates**: Live sync across multiple users via PubSub
 - **Lead Management**: Track name, email, phone, budget, source, and owner
 - **Smart Filters**: Filter by owner, source, or starred leads
+- **Role-Based Access Control (RBAC)**: 4 user roles with granular permissions
+- **Authentication**: Secure login/logout with session management and password hashing
 
 ## Tech Stack
 
@@ -51,7 +53,10 @@ Now visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 This project includes comprehensive documentation covering different aspects of the CRM:
 
-### 📋 Business Rules
+### � Security & Access Control
+- **[Role Permissions](ROLE_PERMISSIONS.md)** - User roles, permission matrix, and access control rules
+
+### �📋 Business Rules
 - **[Business Rules](business%20rules.md)** - Complete sales pipeline stages, lead activities, and automatic stage transitions
 
 ### 📊 Analytics & Reporting
