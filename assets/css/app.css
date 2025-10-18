@@ -1,0 +1,503 @@
+/* See the Tailwind configuration guide for advanced usage
+   https://tailwindcss.com/docs/configuration */
+
+@import "tailwindcss" source(none);
+@source "../css";
+@source "../js";
+@source "../../lib/crm_web";
+
+/* A Tailwind plugin that makes "hero-#{ICON}" classes available.
+   The heroicons installation itself is managed by your mix.exs */
+@plugin "../vendor/heroicons";
+
+/* daisyUI Tailwind Plugin. You can update this file by fetching the latest version with:
+   curl -sLO https://github.com/saadeghi/daisyui/releases/latest/download/daisyui.js
+   Make sure to look at the daisyUI changelog: https://daisyui.com/docs/changelog/ */
+@plugin "../vendor/daisyui" {
+  themes: false;
+}
+
+/* daisyUI theme plugin. You can update this file by fetching the latest version with:
+  curl -sLO https://github.com/saadeghi/daisyui/releases/latest/download/daisyui-theme.js
+  We ship with two themes, a light one inspired on Phoenix colors and a dark one inspired
+  on Elixir colors. Build your own at: https://daisyui.com/theme-generator/ */
+@plugin "../vendor/daisyui-theme" {
+  name: "dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+  --color-base-100: oklch(30.33% 0.016 252.42);
+  --color-base-200: oklch(25.26% 0.014 253.1);
+  --color-base-300: oklch(20.15% 0.012 254.09);
+  --color-base-content: oklch(97.807% 0.029 256.847);
+  --color-primary: oklch(58% 0.233 277.117);
+  --color-primary-content: oklch(96% 0.018 272.314);
+  --color-secondary: oklch(58% 0.233 277.117);
+  --color-secondary-content: oklch(96% 0.018 272.314);
+  --color-accent: oklch(60% 0.25 292.717);
+  --color-accent-content: oklch(96% 0.016 293.756);
+  --color-neutral: oklch(37% 0.044 257.287);
+  --color-neutral-content: oklch(98% 0.003 247.858);
+  --color-info: oklch(58% 0.158 241.966);
+  --color-info-content: oklch(97% 0.013 236.62);
+  --color-success: oklch(60% 0.118 184.704);
+  --color-success-content: oklch(98% 0.014 180.72);
+  --color-warning: oklch(66% 0.179 58.318);
+  --color-warning-content: oklch(98% 0.022 95.277);
+  --color-error: oklch(58% 0.253 17.585);
+  --color-error-content: oklch(96% 0.015 12.422);
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.21875rem;
+  --size-field: 0.21875rem;
+  --border: 1.5px;
+  --depth: 1;
+  --noise: 0;
+}
+
+@plugin "../vendor/daisyui-theme" {
+  name: "light";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(98% 0 0);
+  --color-base-200: oklch(96% 0.001 286.375);
+  --color-base-300: oklch(92% 0.004 286.32);
+  --color-base-content: oklch(21% 0.006 285.885);
+  --color-primary: oklch(70% 0.213 47.604);
+  --color-primary-content: oklch(98% 0.016 73.684);
+  --color-secondary: oklch(55% 0.027 264.364);
+  --color-secondary-content: oklch(98% 0.002 247.839);
+  --color-accent: oklch(0% 0 0);
+  --color-accent-content: oklch(100% 0 0);
+  --color-neutral: oklch(44% 0.017 285.786);
+  --color-neutral-content: oklch(98% 0 0);
+  --color-info: oklch(62% 0.214 259.815);
+  --color-info-content: oklch(97% 0.014 254.604);
+  --color-success: oklch(70% 0.14 182.503);
+  --color-success-content: oklch(98% 0.014 180.72);
+  --color-warning: oklch(66% 0.179 58.318);
+  --color-warning-content: oklch(98% 0.022 95.277);
+  --color-error: oklch(58% 0.253 17.585);
+  --color-error-content: oklch(96% 0.015 12.422);
+  --radius-selector: 0.25rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.5rem;
+  --size-selector: 0.21875rem;
+  --size-field: 0.21875rem;
+  --border: 1.5px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* Add variants based on LiveView classes */
+@custom-variant phx-click-loading (.phx-click-loading&, .phx-click-loading &);
+@custom-variant phx-submit-loading (.phx-submit-loading&, .phx-submit-loading &);
+@custom-variant phx-change-loading (.phx-change-loading&, .phx-change-loading &);
+
+/* Use the data attribute for dark mode  */
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* Make LiveView wrapper divs transparent for layout */
+[data-phx-session], [data-phx-teleported-src] { display: contents }
+
+/* This file is for your main application CSS */
+
+/* GitHub-inspired Dark Theme */
+:root {
+  --gh-canvas: #0d1117;
+  --gh-surface: #161b22;
+  --gh-border: #30363d;
+  --gh-border-muted: #21262d;
+  --gh-text-primary: #e6edf3;
+  --gh-text-secondary: #7d8590;
+  --gh-text-tertiary: #484f58;
+  --gh-accent: #58a6ff;
+  --gh-success: #238636;
+  --gh-success-hover: #2ea043;
+  --gh-danger: #da3633;
+  --gh-warning: #d29922;
+  --gh-info: #58a6ff;
+  --gh-purple: #8957e5;
+  --gh-orange: #db6d28;
+}
+
+/* Dashboard specific styles */
+.gh-metric-card {
+  background-color: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  transition: all 0.2s;
+}
+
+.gh-metric-card:hover {
+  border-color: var(--gh-accent);
+}
+
+.gh-metric-label {
+  font-size: 0.875rem;
+  color: var(--gh-text-secondary);
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.gh-metric-value {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.gh-metric-value.success { color: var(--gh-success); }
+.gh-metric-value.info { color: var(--gh-info); }
+.gh-metric-value.purple { color: var(--gh-purple); }
+.gh-metric-value.warning { color: var(--gh-warning); }
+
+.gh-metric-subtitle {
+  font-size: 0.75rem;
+  color: var(--gh-text-secondary);
+  margin-top: 0.5rem;
+}
+
+.gh-chart-container {
+  background-color: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.gh-chart-header {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--gh-border);
+  background-color: var(--gh-canvas);
+}
+
+.gh-chart-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--gh-text-primary);
+}
+
+.gh-chart-body {
+  padding: 1.25rem;
+  background-color: var(--gh-canvas);
+}
+
+/* Chart SVG text styling */
+.gh-chart-body svg text {
+  fill: var(--gh-text-secondary) !important;
+}
+
+.gh-chart-body svg line {
+  stroke: var(--gh-border) !important;
+}
+
+.gh-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gh-table thead {
+  border-bottom: 1px solid var(--gh-border);
+}
+
+.gh-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gh-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.gh-table td {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--gh-border-muted);
+  font-size: 0.875rem;
+  color: var(--gh-text-primary);
+}
+
+.gh-table tbody tr:hover {
+  background-color: var(--gh-surface);
+}
+
+.gh-page {
+  min-height: 100vh;
+  background-color: var(--gh-canvas);
+  padding: 1.5rem;
+}
+
+.gh-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--gh-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.gh-subtitle {
+  font-size: 0.875rem;
+  color: var(--gh-text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.gh-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.gh-canvas { background-color: var(--gh-canvas); }
+.gh-surface { background-color: var(--gh-surface); }
+.gh-border { border-color: var(--gh-border); }
+.gh-border-muted { border-color: var(--gh-border-muted); }
+.gh-text-primary { color: var(--gh-text-primary); }
+.gh-text-secondary { color: var(--gh-text-secondary); }
+.gh-text-tertiary { color: var(--gh-text-tertiary); }
+.gh-text-accent { color: var(--gh-accent); }
+
+.gh-header {
+  background-color: var(--gh-surface);
+  border-bottom: 1px solid var(--gh-border);
+}
+
+.gh-card {
+  background-color: var(--gh-canvas);
+  border: 1px solid var(--gh-border);
+  transition: all 0.2s;
+  cursor: move;
+}
+
+.gh-card:hover {
+  border-color: var(--gh-accent);
+}
+
+.gh-column {
+  background-color: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+}
+
+.gh-column-header {
+  border-bottom: 1px solid var(--gh-border-muted);
+}
+
+.gh-badge {
+  background-color: var(--gh-canvas);
+  color: var(--gh-text-secondary);
+}
+
+.gh-btn-primary {
+  background-color: var(--gh-success);
+  color: white;
+}
+
+.gh-btn-primary:hover {
+  background-color: var(--gh-success-hover);
+}
+
+.gh-input {
+  background-color: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  color: var(--gh-text-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+}
+
+.gh-input:focus {
+  border-color: var(--gh-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(33, 136, 255, 0.1);
+}
+
+.gh-input::placeholder {
+  color: var(--gh-text-tertiary);
+}
+
+select.gh-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.5rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  padding-right: 2.5rem;
+}
+
+textarea.gh-input {
+  resize: vertical;
+  min-height: 4rem;
+}
+
+.gh-divider {
+  border-top: 1px solid var(--gh-border-muted);
+}
+
+/* Form Components */
+.gh-form-container {
+  max-width: 42rem;
+  margin: 2rem auto;
+  background-color: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: 0.5rem;
+  padding: 2rem;
+}
+
+.gh-form-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--gh-text-primary);
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--gh-border);
+}
+
+.gh-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.gh-form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gh-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.gh-form-label-required::after {
+  content: " *";
+  color: var(--gh-danger);
+}
+
+.gh-form-input {
+  width: 100%;
+  background-color: var(--gh-canvas);
+  border: 1px solid var(--gh-border);
+  color: var(--gh-text-primary);
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+.gh-form-input:focus {
+  border-color: var(--gh-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.1);
+}
+
+.gh-form-input::placeholder {
+  color: var(--gh-text-tertiary);
+}
+
+.gh-form-select {
+  width: 100%;
+  background-color: var(--gh-canvas);
+  border: 1px solid var(--gh-border);
+  color: var(--gh-text-primary);
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%237d8590'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.5rem center;
+  background-size: 1.25rem;
+}
+
+.gh-form-select:focus {
+  border-color: var(--gh-accent);
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.1);
+}
+
+.gh-form-checkbox {
+  width: 1rem;
+  height: 1rem;
+  background-color: var(--gh-canvas);
+  border: 1px solid var(--gh-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.gh-form-checkbox:checked {
+  background-color: var(--gh-accent);
+  border-color: var(--gh-accent);
+}
+
+.gh-form-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+
+.gh-form-error {
+  color: var(--gh-danger);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.gh-form-hint {
+  color: var(--gh-text-secondary);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.gh-form-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--gh-border);
+  margin-top: 2rem;
+}
+
+.gh-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gh-btn-primary {
+  background-color: var(--gh-success);
+  color: white;
+  border-color: var(--gh-success);
+}
+
+.gh-btn-primary:hover {
+  background-color: var(--gh-success-hover);
+  border-color: var(--gh-success-hover);
+}
+
+.gh-btn-secondary {
+  background-color: var(--gh-surface);
+  color: var(--gh-text-primary);
+  border-color: var(--gh-border);
+}
+
+.gh-btn-secondary:hover {
+  background-color: var(--gh-border-muted);
+  border-color: var(--gh-border);
+}
+
+.gh-btn-danger {
+  background-color: var(--gh-danger);
+  color: white;
+  border-color: var(--gh-danger);
+}
+
+.gh-btn-danger:hover {
+  background-color: #c93025;
+  border-color: #c93025;
+}
