@@ -6,29 +6,46 @@ defmodule CrmWeb.LeadLive.Show do
   alias Crm.Sales.Activity
   import CrmWeb.ActivityHelpers
   import CrmWeb.FormatHelpers
+  import CrmWeb.AuthorizationHelpers
 
   @impl true
   def mount(_params, _session, socket) do
     if connected?(socket), do: Leads.subscribe()
 
+    current_user = socket.assigns.current_user
+
     {:ok,
      socket
      |> assign(:show_activity_form, false)
-     |> assign(:activity_types, Activity.activity_types())}
+     |> assign(:activity_types, Activity.activity_types())
+     |> assign(:can_update, can?(current_user, "leads", "update"))
+     |> assign(:can_delete, can?(current_user, "leads", "delete"))
+     |> assign(:can_create_activity, can?(current_user, "activities", "create"))}
   end
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     lead = Leads.get_lead!(id)
+    current_user = socket.assigns.current_user
 
-    {:noreply,
-     socket
-     |> assign(:page_title, "Lead Details")
-     |> assign(:lead, lead)
-     |> assign(
-       :activity_form,
-       to_form(Activities.change_activity(%Activity{lead_id: String.to_integer(id)}))
-     )}
+    # Check if user can access this lead
+    can_access = can_access?(current_user, "leads", "show", lead)
+
+    if can_access do
+      {:noreply,
+       socket
+       |> assign(:page_title, "Lead Details")
+       |> assign(:lead, lead)
+       |> assign(
+         :activity_form,
+         to_form(Activities.change_activity(%Activity{lead_id: String.to_integer(id)}))
+       )}
+    else
+      {:noreply,
+       socket
+       |> put_flash(:error, "You don't have permission to view this lead")
+       |> push_navigate(to: ~p"/")}
+    end
   end
 
   @impl true

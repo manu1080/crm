@@ -4,6 +4,7 @@ defmodule CrmWeb.DashboardLive.Index do
   alias Crm.Analytics
   alias Crm.Leads
   alias Contex.{BarChart, Dataset, Plot}
+  import CrmWeb.AuthorizationHelpers
 
   @impl true
   def mount(_params, _session, socket) do
@@ -12,17 +13,28 @@ defmodule CrmWeb.DashboardLive.Index do
       Leads.subscribe()
     end
 
-    sources = Crm.Settings.list_sources()
-    owners = Crm.Leads.list_unique_owners()
+    current_user = socket.assigns.current_user
 
-    socket =
-      socket
-      |> assign(:sources, sources)
-      |> assign(:owners, owners)
-      |> assign(:filters, default_filters())
-      |> load_metrics()
+    # Check if user can view dashboard
+    unless can?(current_user, "dashboard", "view") do
+      {:ok,
+       socket
+       |> put_flash(:error, "You don't have permission to view the dashboard")
+       |> push_navigate(to: ~p"/")}
+    else
+      sources = Crm.Settings.list_sources()
+      owners = Crm.Leads.list_unique_owners()
 
-    {:ok, socket}
+      socket =
+        socket
+        |> assign(:sources, sources)
+        |> assign(:owners, owners)
+        |> assign(:filters, default_filters())
+        |> assign(:permission_scope, permission_scope(current_user, "dashboard", "view"))
+        |> load_metrics()
+
+      {:ok, socket}
+    end
   end
 
   @impl true
@@ -67,11 +79,30 @@ defmodule CrmWeb.DashboardLive.Index do
   defp load_metrics(socket) do
     filters = socket.assigns[:filters] || default_filters()
     days = String.to_integer(filters.date_range)
+    current_user = socket.assigns.current_user
+    permission_scope = socket.assigns.permission_scope
+
+    # Apply owner filter based on permission scope
+    owner_filter =
+      case permission_scope do
+        :all ->
+          if(filters.owner == "all", do: nil, else: filters.owner)
+
+        :own ->
+          current_user.email
+
+        :limited ->
+          # Marketing can see all but might have other restrictions
+          if(filters.owner == "all", do: nil, else: filters.owner)
+
+        _ ->
+          current_user.email
+      end
 
     metrics =
       Analytics.dashboard_metrics(
         days: days,
-        owner: if(filters.owner == "all", do: nil, else: filters.owner),
+        owner: owner_filter,
         source_id: if(filters.source == "all", do: nil, else: String.to_integer(filters.source))
       )
 

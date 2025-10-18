@@ -9,13 +9,15 @@
       </div>
 
       <div class="flex gap-3">
-        <a
-          href={~p"/export/leads.csv?#{export_query_params(@filters)}"}
-          class="gh-btn gh-btn-secondary flex items-center gap-2"
-          download
-        >
-          <.icon name="hero-arrow-down-tray" class="w-4 h-4" /> Export CSV
-        </a>
+        <%= if @can_export do %>
+          <a
+            href={~p"/export/leads.csv?#{export_query_params(@filters)}"}
+            class="gh-btn gh-btn-secondary flex items-center gap-2"
+            download
+          >
+            <.icon name="hero-arrow-down-tray" class="w-4 h-4" /> Export CSV
+          </a>
+        <% end %>
 
         <.link
           navigate={~p"/dashboard"}
@@ -24,19 +26,21 @@
           <.icon name="hero-chart-bar" class="w-4 h-4" /> Dashboard
         </.link>
 
-        <.link
-          navigate={~p"/activities/new"}
-          class="gh-btn gh-btn-secondary flex items-center gap-2"
-        >
-          <.icon name="hero-clock" class="w-4 h-4" /> New Activity
-        </.link>
+        <%= if @can_create do %>
+          <.link
+            navigate={~p"/activities/new"}
+            class="gh-btn gh-btn-secondary flex items-center gap-2"
+          >
+            <.icon name="hero-clock" class="w-4 h-4" /> New Activity
+          </.link>
 
-        <.link
-          navigate={~p"/leads/new"}
-          class="gh-btn gh-btn-primary flex items-center gap-2"
-        >
-          <.icon name="hero-plus" class="w-4 h-4" /> New Lead
-        </.link>
+          <.link
+            navigate={~p"/leads/new"}
+            class="gh-btn gh-btn-primary flex items-center gap-2"
+          >
+            <.icon name="hero-plus" class="w-4 h-4" /> New Lead
+          </.link>
+        <% end %>
       </div>
     </div>
   </div>

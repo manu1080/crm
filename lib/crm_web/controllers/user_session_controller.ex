@@ -9,9 +9,7 @@ defmodule CrmWeb.UserSessionController do
   end
 
   def create(conn, %{"_action" => "password_updated"} = params) do
-    conn
-    |> put_session(:user_return_to, ~p"/users/settings")
-    |> create(params, "Password updated successfully!")
+    create(conn, params, "Password updated successfully!")
   end
 
   def create(conn, params) do

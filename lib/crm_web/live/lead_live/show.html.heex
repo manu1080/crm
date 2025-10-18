@@ -18,11 +18,13 @@
         </div>
       </div>
 
-      <.link navigate={~p"/leads/#{@lead}/edit"}>
-        <button class="gh-btn-primary px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2">
-          <.icon name="hero-pencil-square" class="w-4 h-4" /> Edit Lead
-        </button>
-      </.link>
+      <%= if @can_update do %>
+        <.link navigate={~p"/leads/#{@lead}/edit"}>
+          <button class="gh-btn-primary px-4 py-2 rounded-md text-sm font-medium flex items-center gap-2">
+            <.icon name="hero-pencil-square" class="w-4 h-4" /> Edit Lead
+          </button>
+        </.link>
+      <% end %>
     </div>
   </div>
 
@@ -106,16 +108,18 @@
         <div class="gh-surface gh-border rounded-lg border">
           <div class="px-6 py-4 gh-divider flex items-center justify-between">
             <h2 class="text-lg font-semibold gh-text-primary">Activity Timeline</h2>
-            <button
-              phx-click="toggle_activity_form"
-              class="gh-btn-primary px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2"
-            >
-              <.icon
-                name={if @show_activity_form, do: "hero-x-mark", else: "hero-plus"}
-                class="w-4 h-4"
-              />
-              {if @show_activity_form, do: "Cancel", else: "Add Activity"}
-            </button>
+            <%= if @can_create_activity do %>
+              <button
+                phx-click="toggle_activity_form"
+                class="gh-btn-primary px-3 py-1.5 rounded-md text-sm font-medium flex items-center gap-2"
+              >
+                <.icon
+                  name={if @show_activity_form, do: "hero-x-mark", else: "hero-plus"}
+                  class="w-4 h-4"
+                />
+                {if @show_activity_form, do: "Cancel", else: "Add Activity"}
+              </button>
+            <% end %>
           </div>
           
 <!-- Inline Activity Form -->

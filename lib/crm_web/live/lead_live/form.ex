@@ -4,6 +4,7 @@ defmodule CrmWeb.LeadLive.Form do
   alias Crm.Leads
   alias Crm.Stages
   alias Crm.Sales.Lead
+  import CrmWeb.AuthorizationHelpers
 
   @impl true
   def mount(_params, _session, socket) do
@@ -19,22 +20,40 @@ defmodule CrmWeb.LeadLive.Form do
   end
 
   defp apply_action(socket, :new, _params) do
-    # Get the default "new" stage
-    new_stage = Enum.find(socket.assigns.stages, &(&1.name == "new"))
+    current_user = socket.assigns.current_user
 
-    socket
-    |> assign(:page_title, "New Lead")
-    |> assign(:lead, %Lead{stage_id: new_stage && new_stage.id})
-    |> assign(:form, to_form(Leads.change_lead(%Lead{stage_id: new_stage && new_stage.id})))
+    # Check if user can create leads
+    unless can?(current_user, "leads", "create") do
+      socket
+      |> put_flash(:error, "You don't have permission to create leads")
+      |> push_navigate(to: ~p"/")
+    else
+      # Get the default "new" stage
+      new_stage = Enum.find(socket.assigns.stages, &(&1.name == "new"))
+
+      socket
+      |> assign(:page_title, "New Lead")
+      |> assign(:lead, %Lead{stage_id: new_stage && new_stage.id})
+      |> assign(:form, to_form(Leads.change_lead(%Lead{stage_id: new_stage && new_stage.id})))
+    end
   end
 
   defp apply_action(socket, :edit, %{"id" => id}) do
+    current_user = socket.assigns.current_user
     lead = Leads.get_lead!(id)
 
-    socket
-    |> assign(:page_title, "Edit Lead")
-    |> assign(:lead, lead)
-    |> assign(:form, to_form(Leads.change_lead(lead)))
+    # Check if user can update this lead
+    unless can?(current_user, "leads", "update") &&
+             can_access?(current_user, "leads", "update", lead) do
+      socket
+      |> put_flash(:error, "You don't have permission to edit this lead")
+      |> push_navigate(to: ~p"/")
+    else
+      socket
+      |> assign(:page_title, "Edit Lead")
+      |> assign(:lead, lead)
+      |> assign(:form, to_form(Leads.change_lead(lead)))
+    end
   end
 
   @impl true

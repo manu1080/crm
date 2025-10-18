@@ -10,11 +10,9 @@ defmodule CrmWeb.UserRegistrationLive do
       <div class="gh-form-container max-w-md w-full">
         <div class="text-center mb-8">
           <h1 class="gh-form-title">Register for an account</h1>
+
           <p class="gh-text-secondary mt-2">
-            Already registered?
-            <.link navigate={~p"/login"} class="gh-link">
-              Sign in
-            </.link>
+            Already registered? <.link navigate={~p"/login"} class="gh-link">Sign in</.link>
             to your account now.
           </p>
         </div>
@@ -67,6 +65,21 @@ defmodule CrmWeb.UserRegistrationLive do
             <p class="gh-text-tertiary text-xs mt-1">At least 6 characters</p>
           </div>
 
+          <div class="gh-form-group">
+            <label class="gh-form-label gh-form-label-required">Role</label>
+            <select name="user[role_id]" class="gh-form-input" required>
+              <option value="">Select a role</option>
+              <%= for role <- @roles do %>
+                <option value={role.id} selected={@form[:role_id].value == role.id}>
+                  {role.label}
+                </option>
+              <% end %>
+            </select>
+            <p class="gh-text-tertiary text-xs mt-1">
+              Choose the appropriate role for this user
+            </p>
+          </div>
+
           <div class="gh-form-actions">
             <button
               type="submit"
@@ -84,27 +97,21 @@ defmodule CrmWeb.UserRegistrationLive do
 
   def mount(_params, _session, socket) do
     changeset = Accounts.change_user_registration(%User{})
+    roles = Accounts.list_roles()
 
     socket =
       socket
       |> assign(trigger_submit: false, check_errors: false)
+      |> assign(:roles, roles)
       |> assign_form(changeset)
 
     {:ok, socket, temporary_assigns: [form: nil]}
   end
 
   def handle_event("save", %{"user" => user_params}, socket) do
-    # Assign default role (capture) for new registrations
-    user_params = Map.put(user_params, "role_id", get_default_role_id())
-
     case Accounts.register_user(user_params) do
       {:ok, user} ->
-        {:ok, _} =
-          Accounts.deliver_user_confirmation_instructions(
-            user,
-            &url(~p"/users/confirm/#{&1}")
-          )
-
+        # Successfully registered - no email confirmation needed for now
         changeset = Accounts.change_user_registration(user)
         {:noreply, socket |> assign(trigger_submit: true) |> assign_form(changeset)}
 
@@ -125,14 +132,6 @@ defmodule CrmWeb.UserRegistrationLive do
       assign(socket, form: form, check_errors: false)
     else
       assign(socket, form: form)
-    end
-  end
-
-  defp get_default_role_id do
-    # Get the "capture" role ID as default for new registrations
-    case Accounts.get_role_by_name("capture") do
-      nil -> nil
-      role -> role.id
     end
   end
 end

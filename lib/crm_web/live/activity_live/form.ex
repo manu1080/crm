@@ -4,12 +4,23 @@ defmodule CrmWeb.ActivityLive.Form do
   alias Crm.Leads
   alias Crm.Activities
   alias Crm.Sales.Activity
+  import CrmWeb.AuthorizationHelpers
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok,
-     socket
-     |> assign(:activity_types, Activity.activity_types())}
+    current_user = socket.assigns.current_user
+
+    # Check if user can create activities
+    unless can?(current_user, "activities", "create") do
+      {:ok,
+       socket
+       |> put_flash(:error, "You don't have permission to create activities")
+       |> push_navigate(to: ~p"/")}
+    else
+      {:ok,
+       socket
+       |> assign(:activity_types, Activity.activity_types())}
+    end
   end
 
   @impl true

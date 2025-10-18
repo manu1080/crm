@@ -35,7 +35,8 @@ defmodule CrmWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
-      on_mount: [{CrmWeb.UserAuth, :ensure_authenticated}] do
+      on_mount: [{CrmWeb.UserAuth, :ensure_authenticated}],
+      layout: {CrmWeb.Layouts, :app} do
       live "/", LeadLive.Index, :index
       live "/leads", LeadLive.Index, :index
       live "/leads/new", LeadLive.Form, :new
@@ -49,7 +50,7 @@ defmodule CrmWeb.Router do
 
     # Export routes
     get "/export/leads.csv", ExportController, :leads_csv
-    
+
     delete "/logout", UserSessionController, :delete
   end
 
