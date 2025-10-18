@@ -5,12 +5,6 @@ defmodule CrmWeb.Layouts do
   """
   use CrmWeb, :html
 
-  # Embed all files in layouts/* within this module.
-  # The default root.html.heex file contains the HTML
-  # skeleton of your application, namely HTML headers
-  # and other static content.
-  embed_templates "layouts/*"
-
   @doc """
   Renders your app layout.
 
@@ -151,4 +145,10 @@ defmodule CrmWeb.Layouts do
     </div>
     """
   end
+
+  # Embed all files in layouts/* within this module.
+  # The default root.html.heex file contains the HTML
+  # skeleton of your application, namely HTML headers
+  # and other static content.
+  embed_templates "layouts/*"
 end

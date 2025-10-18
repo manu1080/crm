@@ -1,6 +1,8 @@
 defmodule CrmWeb.Router do
   use CrmWeb, :router
 
+  import CrmWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,27 +10,47 @@ defmodule CrmWeb.Router do
     plug :put_root_layout, html: {CrmWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
+  # Public routes (no authentication required)
   scope "/", CrmWeb do
-    pipe_through :browser
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
 
-    live "/", LeadLive.Index, :index
-    live "/leads", LeadLive.Index, :index
-    live "/leads/new", LeadLive.Form, :new
-    live "/leads/:id", LeadLive.Show, :show
-    live "/leads/:id/edit", LeadLive.Form, :edit
+    live_session :redirect_if_user_is_authenticated,
+      on_mount: [{CrmWeb.UserAuth, :redirect_if_user_is_authenticated}] do
+      live "/register", UserRegistrationLive, :new
+      live "/login", UserLoginLive, :new
+    end
 
-    live "/activities/new", ActivityLive.Form, :new
+    post "/login", UserSessionController, :create
+  end
 
-    live "/dashboard", DashboardLive.Index, :index
+  # Protected routes (authentication required)
+  scope "/", CrmWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :require_authenticated_user,
+      on_mount: [{CrmWeb.UserAuth, :ensure_authenticated}] do
+      live "/", LeadLive.Index, :index
+      live "/leads", LeadLive.Index, :index
+      live "/leads/new", LeadLive.Form, :new
+      live "/leads/:id", LeadLive.Show, :show
+      live "/leads/:id/edit", LeadLive.Form, :edit
+
+      live "/activities/new", ActivityLive.Form, :new
+
+      live "/dashboard", DashboardLive.Index, :index
+    end
 
     # Export routes
     get "/export/leads.csv", ExportController, :leads_csv
+    
+    delete "/logout", UserSessionController, :delete
   end
 
   # Other scopes may use custom stacks.
