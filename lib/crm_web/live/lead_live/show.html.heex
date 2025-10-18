@@ -37,7 +37,7 @@
           <div class="px-6 py-4 gh-divider flex items-center justify-between">
             <h2 class="text-lg font-semibold gh-text-primary">Lead Information</h2>
             <span class="gh-badge px-3 py-1 rounded-full text-xs font-medium capitalize">
-              {@lead.stage_rel.label}
+              {if @lead.stage_rel, do: @lead.stage_rel.label, else: "No stage"}
             </span>
           </div>
 
