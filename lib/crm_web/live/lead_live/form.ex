@@ -42,9 +42,11 @@ defmodule CrmWeb.LeadLive.Form do
     current_user = socket.assigns.current_user
     lead = Leads.get_lead!(id)
 
-    # Check if user can update this lead
-    unless can?(current_user, "leads", "update") &&
-             can_access?(current_user, "leads", "update", lead) do
+    # Check if user can update leads (some roles can only update own)
+    can_update = can?(current_user, "leads", "update")
+    can_update_this = can_update && can_access?(current_user, "leads", "update", lead)
+
+    unless can_update_this do
       socket
       |> put_flash(:error, "You don't have permission to edit this lead")
       |> push_navigate(to: ~p"/")

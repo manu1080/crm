@@ -200,9 +200,9 @@ defmodule Crm.Repo.Migrations.AddRolePermissions do
       }
     ]
 
-    # Marketing permissions - read-only mostly
+    # Marketing permissions - view all, create, export
     marketing_permissions = [
-      # Leads - view and create only
+      # Leads - view all
       %{
         role_id: marketing_id,
         resource: "leads",
@@ -235,25 +235,25 @@ defmodule Crm.Repo.Migrations.AddRolePermissions do
         inserted_at: now,
         updated_at: now
       },
-      # Dashboard - limited metrics
+      # Dashboard - full access
       %{
         role_id: marketing_id,
         resource: "dashboard",
         action: "view",
-        scope: "limited",
+        scope: "all",
         inserted_at: now,
         updated_at: now
       }
     ]
 
-    # Capture permissions - own leads only
+    # Capture permissions - view all, create, update own
     capture_permissions = [
-      # Leads - own only
+      # Leads - view all
       %{
         role_id: capture_id,
         resource: "leads",
         action: "index",
-        scope: "own",
+        scope: "all",
         inserted_at: now,
         updated_at: now
       },
@@ -261,7 +261,7 @@ defmodule Crm.Repo.Migrations.AddRolePermissions do
         role_id: capture_id,
         resource: "leads",
         action: "show",
-        scope: "own",
+        scope: "all",
         inserted_at: now,
         updated_at: now
       },
@@ -269,7 +269,7 @@ defmodule Crm.Repo.Migrations.AddRolePermissions do
         role_id: capture_id,
         resource: "leads",
         action: "create",
-        scope: "own",
+        scope: "all",
         inserted_at: now,
         updated_at: now
       },
@@ -278,6 +278,15 @@ defmodule Crm.Repo.Migrations.AddRolePermissions do
         resource: "leads",
         action: "update",
         scope: "own",
+        inserted_at: now,
+        updated_at: now
+      },
+      # Dashboard - view all
+      %{
+        role_id: capture_id,
+        resource: "dashboard",
+        action: "view",
+        scope: "all",
         inserted_at: now,
         updated_at: now
       }

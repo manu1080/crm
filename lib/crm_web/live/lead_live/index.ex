@@ -12,11 +12,6 @@ defmodule CrmWeb.LeadLive.Index do
 
     current_user = socket.assigns.current_user
 
-    # Get permission scope - try 'index' first, then 'show' as fallback
-    scope = permission_scope(current_user, "leads", "index") ||
-            permission_scope(current_user, "leads", "show") ||
-            :own
-
     {:ok,
      socket
      |> assign(:page_title, "Pipeline")
@@ -27,7 +22,6 @@ defmodule CrmWeb.LeadLive.Index do
      |> assign(:can_create, can?(current_user, "leads", "create"))
      |> assign(:can_export, can?(current_user, "leads", "export"))
      |> assign(:can_update, can?(current_user, "leads", "update"))
-     |> assign(:permission_scope, scope)
      |> load_leads()}
   end
 
@@ -126,34 +120,12 @@ defmodule CrmWeb.LeadLive.Index do
   defp load_leads(socket) do
     filters = socket.assigns.filters
     filter_list = build_filter_list(filters)
-    current_user = socket.assigns.current_user
-    permission_scope = socket.assigns.permission_scope
 
     leads =
       if Enum.empty?(filter_list) do
         Leads.list_leads()
       else
         Leads.list_leads(filter_list)
-      end
-
-    # Filter leads based on permission scope
-    leads =
-      case permission_scope do
-        :all ->
-          leads
-
-        :own ->
-          Enum.filter(leads, fn lead -> lead.owner == current_user.email end)
-
-        :limited ->
-          # For marketing: only view leads in specific stages
-          Enum.filter(leads, fn lead ->
-            lead.stage_rel && lead.stage_rel.name in ["qualified", "proposal", "won"]
-          end)
-
-        # Default to "own" if scope is nil or unknown
-        _ ->
-          Enum.filter(leads, fn lead -> lead.owner == current_user.email end)
       end
 
     # Group by stage_rel.name instead of the old stage string field

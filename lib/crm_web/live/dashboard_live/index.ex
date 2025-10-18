@@ -30,7 +30,6 @@ defmodule CrmWeb.DashboardLive.Index do
         |> assign(:sources, sources)
         |> assign(:owners, owners)
         |> assign(:filters, default_filters())
-        |> assign(:permission_scope, permission_scope(current_user, "dashboard", "view"))
         |> load_metrics()
 
       {:ok, socket}
@@ -79,25 +78,9 @@ defmodule CrmWeb.DashboardLive.Index do
   defp load_metrics(socket) do
     filters = socket.assigns[:filters] || default_filters()
     days = String.to_integer(filters.date_range)
-    current_user = socket.assigns.current_user
-    permission_scope = socket.assigns.permission_scope
 
-    # Apply owner filter based on permission scope
-    owner_filter =
-      case permission_scope do
-        :all ->
-          if(filters.owner == "all", do: nil, else: filters.owner)
-
-        :own ->
-          current_user.email
-
-        :limited ->
-          # Marketing can see all but might have other restrictions
-          if(filters.owner == "all", do: nil, else: filters.owner)
-
-        _ ->
-          current_user.email
-      end
+    # All users can see all data now
+    owner_filter = if(filters.owner == "all", do: nil, else: filters.owner)
 
     metrics =
       Analytics.dashboard_metrics(

@@ -26,26 +26,15 @@ defmodule CrmWeb.LeadLive.Show do
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
     lead = Leads.get_lead!(id)
-    current_user = socket.assigns.current_user
 
-    # Check if user can access this lead
-    can_access = can_access?(current_user, "leads", "show", lead)
-
-    if can_access do
-      {:noreply,
-       socket
-       |> assign(:page_title, "Lead Details")
-       |> assign(:lead, lead)
-       |> assign(
-         :activity_form,
-         to_form(Activities.change_activity(%Activity{lead_id: String.to_integer(id)}))
-       )}
-    else
-      {:noreply,
-       socket
-       |> put_flash(:error, "You don't have permission to view this lead")
-       |> push_navigate(to: ~p"/")}
-    end
+    {:noreply,
+     socket
+     |> assign(:page_title, "Lead Details")
+     |> assign(:lead, lead)
+     |> assign(
+       :activity_form,
+       to_form(Activities.change_activity(%Activity{lead_id: String.to_integer(id)}))
+     )}
   end
 
   @impl true
