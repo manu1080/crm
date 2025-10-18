@@ -67,7 +67,9 @@ defmodule Crm.Activities do
     |> Multi.run(:update_lead_activity_time, fn repo, %{activity: _activity} ->
       if lead do
         lead
-        |> Ecto.Changeset.change(%{last_activity_at: DateTime.utc_now() |> DateTime.truncate(:second)})
+        |> Ecto.Changeset.change(%{
+          last_activity_at: DateTime.utc_now() |> DateTime.truncate(:second)
+        })
         |> repo.update()
       else
         {:ok, nil}

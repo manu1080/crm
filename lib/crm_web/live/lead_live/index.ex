@@ -3,6 +3,7 @@ defmodule CrmWeb.LeadLive.Index do
 
   alias Crm.Leads
   alias Crm.Stages
+  import CrmWeb.FormatHelpers
 
   @impl true
   def mount(_params, _session, socket) do
@@ -170,35 +171,6 @@ defmodule CrmWeb.LeadLive.Index do
       nil -> stage_name
       stage -> stage.label
     end
-  end
-
-  defp format_budget(nil), do: "-"
-
-  defp format_budget(amount) do
-    # Simple formatting with thousand separators
-    amount
-    |> to_string()
-    |> String.reverse()
-    |> String.graphemes()
-    |> Enum.chunk_every(3)
-    |> Enum.join(".")
-    |> String.reverse()
-    |> then(&"€#{&1}")
-  end
-
-  defp format_date(nil), do: "-"
-
-  defp format_date(datetime) do
-    Calendar.strftime(datetime, "%d/%m/%y")
-  end
-
-  defp get_initials(name) do
-    name
-    |> String.split()
-    |> Enum.take(2)
-    |> Enum.map(&String.first/1)
-    |> Enum.join()
-    |> String.upcase()
   end
 
   defp export_query_params(filters) do

@@ -28,7 +28,12 @@ defmodule CrmWeb.ActivityLive.Form do
     |> assign(:page_title, "New Activity")
     |> assign(:activity, %Activity{lead_id: lead_id && String.to_integer(lead_id)})
     |> assign(:leads, leads)
-    |> assign(:form, to_form(Activities.change_activity(%Activity{lead_id: lead_id && String.to_integer(lead_id)})))
+    |> assign(
+      :form,
+      to_form(
+        Activities.change_activity(%Activity{lead_id: lead_id && String.to_integer(lead_id)})
+      )
+    )
   end
 
   @impl true

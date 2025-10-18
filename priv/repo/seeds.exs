@@ -30,9 +30,19 @@ IO.puts("✅ #{length(roles)} roles")
 users = [
   %{name: "Ana García", email: "ana.garcia@crm.com", role: "sales", password: "password123"},
   %{name: "Carlos López", email: "carlos.lopez@crm.com", role: "sales", password: "password123"},
-  %{name: "María Rodríguez", email: "maria.rodriguez@crm.com", role: "marketing", password: "password123"},
+  %{
+    name: "María Rodríguez",
+    email: "maria.rodriguez@crm.com",
+    role: "marketing",
+    password: "password123"
+  },
   %{name: "Juan Pérez", email: "juan.perez@crm.com", role: "capture", password: "password123"},
-  %{name: "Laura Martínez", email: "laura.martinez@crm.com", role: "admin", password: "password123"}
+  %{
+    name: "Laura Martínez",
+    email: "laura.martinez@crm.com",
+    role: "admin",
+    password: "password123"
+  }
 ]
 
 Enum.each(users, fn u ->
@@ -94,7 +104,12 @@ stages = [
   },
   %{name: "deposit", label: "Deposit", description: "Deposit received", order: 5},
   %{name: "notary", label: "Notary", description: "Notary process", order: 6},
-  %{name: "management_contract", label: "Management Contract", description: "Management contract", order: 7},
+  %{
+    name: "management_contract",
+    label: "Management Contract",
+    description: "Management contract",
+    order: 7
+  },
   %{name: "won", label: "Won", description: "Deal closed", order: 8},
   %{name: "lost", label: "Lost", description: "Did not convert", order: 9}
 ]
@@ -710,7 +725,8 @@ activities = [
   %{
     lead_id: Enum.at(lead_sample, 1).id,
     type: "note_added",
-    description: "Looking for 2-bedroom apartment in Barcelona city center. Timeline: 3-6 months.",
+    description:
+      "Looking for 2-bedroom apartment in Barcelona city center. Timeline: 3-6 months.",
     stage_change_from_id: nil,
     stage_change_to_id: nil
   },
@@ -735,7 +751,8 @@ activities = [
   %{
     lead_id: Enum.at(lead_sample, 3).id,
     type: "offer_sent",
-    description: "Formal offer sent for property in Eixample district. €95,000 with 10% down payment.",
+    description:
+      "Formal offer sent for property in Eixample district. €95,000 with 10% down payment.",
     stage_change_from_id: stage_ids["meeting"],
     stage_change_to_id: stage_ids["negotiation"]
   },
@@ -758,7 +775,8 @@ activities = [
   %{
     lead_id: Enum.at(lead_sample, 4).id,
     type: "note_added",
-    description: "Contract signed. Closing scheduled for end of month. Total deal value: €120,000.",
+    description:
+      "Contract signed. Closing scheduled for end of month. Total deal value: €120,000.",
     stage_change_from_id: nil,
     stage_change_to_id: nil
   },
@@ -774,7 +792,8 @@ activities = [
   %{
     lead_id: Enum.at(lead_sample, 5).id,
     type: "lead_lost",
-    description: "Lost reason: Price too high. Requested to stay in touch for future opportunities.",
+    description:
+      "Lost reason: Price too high. Requested to stay in touch for future opportunities.",
     stage_change_from_id: nil,
     stage_change_to_id: nil
   },
@@ -806,7 +825,8 @@ activities = [
   %{
     lead_id: Enum.at(lead_sample, 7).id,
     type: "meeting_completed",
-    description: "Video call completed. Client is relocating from Madrid, needs property quickly.",
+    description:
+      "Video call completed. Client is relocating from Madrid, needs property quickly.",
     stage_change_from_id: stage_ids["contacted"],
     stage_change_to_id: stage_ids["qualified"]
   },
@@ -1023,7 +1043,8 @@ activities = [
   %{
     lead_id: Enum.at(lead_sample, 21).id,
     type: "call_logged",
-    description: "Reviewing management contract terms. Client satisfied with property manager assignment.",
+    description:
+      "Reviewing management contract terms. Client satisfied with property manager assignment.",
     stage_change_from_id: nil,
     stage_change_to_id: nil
   },

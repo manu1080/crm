@@ -11,8 +11,14 @@
     <.form for={@form} phx-change="validate" phx-submit="save">
       <div class="gh-form-group">
         <label class="gh-form-label gh-form-label-required">Lead</label>
-        <select name="activity[lead_id]" class="gh-form-select" required value={@form[:lead_id].value}>
+        <select
+          name="activity[lead_id]"
+          class="gh-form-select"
+          required
+          value={@form[:lead_id].value}
+        >
           <option value="">Select a lead</option>
+          
           <%= for lead <- @leads do %>
             <option value={lead.id} selected={@form[:lead_id].value == lead.id}>
               {lead.name} ({lead.email})
@@ -26,15 +32,14 @@
         <label class="gh-form-label gh-form-label-required">Activity Type</label>
         <select name="activity[type]" class="gh-form-select" required value={@form[:type].value}>
           <option value="">Select activity type</option>
+          
           <%= for type <- @activity_types do %>
             <option value={type} selected={@form[:type].value == type}>
               {Crm.Sales.Activity.type_label(type)}
             </option>
           <% end %>
         </select>
-        <p class="gh-form-hint">
-          Some activities automatically change the lead's stage
-        </p>
+        <p class="gh-form-hint">Some activities automatically change the lead's stage</p>
       </div>
       
       <div class="gh-form-group">
@@ -50,18 +55,27 @@
       </div>
       
       <div class="gh-surface gh-border rounded-lg border p-4 mb-6">
-        <h3 class="text-sm font-semibold gh-text-primary mb-2">
-          🤖 Automatic Stage Transitions
-        </h3>
+        <h3 class="text-sm font-semibold gh-text-primary mb-2">🤖 Automatic Stage Transitions</h3>
+        
         <ul class="text-sm gh-text-secondary space-y-1">
-          <li>• <strong>Meeting Completed</strong> → Changes to Qualified (if currently Contacted)</li>
+          <li>
+            • <strong>Meeting Completed</strong> → Changes to Qualified (if currently Contacted)
+          </li>
+          
           <li>• <strong>Offer Sent</strong> → Changes to Meeting</li>
+          
           <li>• <strong>Offer Accepted</strong> → Changes to Deposit</li>
+          
           <li>• <strong>Deposit Received</strong> → Changes to Notary</li>
+          
           <li>• <strong>Notary Scheduled</strong> → Changes to Management Contract</li>
+          
           <li>• <strong>Contract Signed</strong> → Changes to Won</li>
+          
           <li>• <strong>Offer Rejected</strong> → Changes to Lost</li>
+          
           <li>• <strong>Lead Lost</strong> → Changes to Lost</li>
+          
           <li>• <strong>Lead Reactivated</strong> → Changes to Contacted</li>
         </ul>
       </div>
@@ -69,8 +83,7 @@
       <div class="gh-form-actions">
         <button type="submit" class="gh-btn gh-btn-primary">
           <.icon name="hero-check" class="w-4 h-4" /> Create Activity
-        </button>
-        <.link navigate={~p"/leads"} class="gh-btn gh-btn-secondary">Cancel</.link>
+        </button> <.link navigate={~p"/leads"} class="gh-btn gh-btn-secondary">Cancel</.link>
       </div>
     </.form>
   </div>

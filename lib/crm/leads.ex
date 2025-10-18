@@ -164,7 +164,10 @@ defmodule Crm.Leads do
 
       stage ->
         lead
-        |> Lead.changeset(%{stage_id: stage.id, last_activity_at: DateTime.utc_now() |> DateTime.truncate(:second)})
+        |> Lead.changeset(%{
+          stage_id: stage.id,
+          last_activity_at: DateTime.utc_now() |> DateTime.truncate(:second)
+        })
         |> Repo.update()
         |> broadcast(:lead_updated)
     end

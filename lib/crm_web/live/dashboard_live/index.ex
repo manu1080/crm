@@ -68,11 +68,12 @@ defmodule CrmWeb.DashboardLive.Index do
     filters = socket.assigns[:filters] || default_filters()
     days = String.to_integer(filters.date_range)
 
-    metrics = Analytics.dashboard_metrics(
-      days: days,
-      owner: (if filters.owner == "all", do: nil, else: filters.owner),
-      source_id: (if filters.source == "all", do: nil, else: String.to_integer(filters.source))
-    )
+    metrics =
+      Analytics.dashboard_metrics(
+        days: days,
+        owner: if(filters.owner == "all", do: nil, else: filters.owner),
+        source_id: if(filters.source == "all", do: nil, else: String.to_integer(filters.source))
+      )
 
     socket
     |> assign(:metrics, metrics)
@@ -102,10 +103,11 @@ defmodule CrmWeb.DashboardLive.Index do
     chart_data = Enum.map(data, fn {stage, count, _percentage} -> [stage, count] end)
     dataset = Dataset.new(chart_data, ["Stage", "Leads"])
 
-    chart = BarChart.new(dataset,
-      colour_palette: ["c9d1d9"],
-      mapping: %{category_col: "Stage", value_cols: ["Leads"]}
-    )
+    chart =
+      BarChart.new(dataset,
+        colour_palette: ["c9d1d9"],
+        mapping: %{category_col: "Stage", value_cols: ["Leads"]}
+      )
 
     Plot.new(600, 400, chart)
     |> Plot.titles("", "")
@@ -116,15 +118,18 @@ defmodule CrmWeb.DashboardLive.Index do
 
   defp render_conversion_by_source_chart(data) do
     # Transform data to source and total leads
-    chart_data = Enum.map(data, fn {source, total, _won, _rate} ->
-      [String.capitalize(source), total]
-    end)
+    chart_data =
+      Enum.map(data, fn {source, total, _won, _rate} ->
+        [String.capitalize(source), total]
+      end)
+
     dataset = Dataset.new(chart_data, ["Source", "Leads"])
 
-    chart = BarChart.new(dataset,
-      colour_palette: ["c9d1d9"],
-      mapping: %{category_col: "Source", value_cols: ["Leads"]}
-    )
+    chart =
+      BarChart.new(dataset,
+        colour_palette: ["c9d1d9"],
+        mapping: %{category_col: "Source", value_cols: ["Leads"]}
+      )
 
     Plot.new(600, 400, chart)
     |> Plot.titles("", "")
@@ -137,10 +142,11 @@ defmodule CrmWeb.DashboardLive.Index do
     chart_data = Enum.map(data, fn {user, count} -> [user, count] end)
     dataset = Dataset.new(chart_data, ["User", "Activities"])
 
-    chart = BarChart.new(dataset,
-      colour_palette: ["c9d1d9"],
-      mapping: %{category_col: "User", value_cols: ["Activities"]}
-    )
+    chart =
+      BarChart.new(dataset,
+        colour_palette: ["c9d1d9"],
+        mapping: %{category_col: "User", value_cols: ["Activities"]}
+      )
 
     Plot.new(600, 400, chart)
     |> Plot.titles("", "")

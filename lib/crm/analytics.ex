@@ -19,7 +19,9 @@ defmodule Crm.Analytics do
   defp maybe_filter_owner_joined(query, owner), do: where(query, [_, l], l.owner == ^owner)
 
   defp maybe_filter_source_joined(query, nil), do: query
-  defp maybe_filter_source_joined(query, source_id), do: where(query, [_, l], l.source_id == ^source_id)
+
+  defp maybe_filter_source_joined(query, source_id),
+    do: where(query, [_, l], l.source_id == ^source_id)
 
   @doc """
   Get leads created per day for the last N days.
@@ -140,12 +142,13 @@ defmodule Crm.Analytics do
     total = Repo.aggregate(total_query, :count, :id)
 
     # Won leads with filters
-    won_query = from(l in Lead,
-      join: s in Stage,
-      on: l.stage_id == s.id,
-      where: s.name == "won",
-      select: count(l.id)
-    )
+    won_query =
+      from(l in Lead,
+        join: s in Stage,
+        on: l.stage_id == s.id,
+        where: s.name == "won",
+        select: count(l.id)
+      )
 
     won_query = maybe_filter_owner(won_query, owner)
     won_query = maybe_filter_source(won_query, source_id)
@@ -170,19 +173,21 @@ defmodule Crm.Analytics do
     source_id = Keyword.get(opts, :source_id)
     cutoff_date = DateTime.utc_now() |> DateTime.add(-days * 24 * 3600, :second)
 
-    active_query = from(l in Lead,
-      where: not is_nil(l.last_activity_at) and l.last_activity_at >= ^cutoff_date,
-      select: count(l.id)
-    )
+    active_query =
+      from(l in Lead,
+        where: not is_nil(l.last_activity_at) and l.last_activity_at >= ^cutoff_date,
+        select: count(l.id)
+      )
 
     active_query = maybe_filter_owner(active_query, owner)
     active_query = maybe_filter_source(active_query, source_id)
     active = Repo.one(active_query)
 
-    inactive_query = from(l in Lead,
-      where: is_nil(l.last_activity_at) or l.last_activity_at < ^cutoff_date,
-      select: count(l.id)
-    )
+    inactive_query =
+      from(l in Lead,
+        where: is_nil(l.last_activity_at) or l.last_activity_at < ^cutoff_date,
+        select: count(l.id)
+      )
 
     inactive_query = maybe_filter_owner(inactive_query, owner)
     inactive_query = maybe_filter_source(inactive_query, source_id)

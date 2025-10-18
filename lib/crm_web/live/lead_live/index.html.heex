@@ -4,10 +4,10 @@
     <div class="flex items-center justify-between px-6 py-4">
       <div>
         <h1 class="text-2xl font-semibold gh-text-primary">Sales Pipeline</h1>
-        
+
         <p class="gh-text-secondary text-sm mt-1">Manage your leads through the sales funnel</p>
       </div>
-      
+
       <div class="flex gap-3">
         <a
           href={~p"/export/leads.csv?#{export_query_params(@filters)}"}
@@ -16,21 +16,21 @@
         >
           <.icon name="hero-arrow-down-tray" class="w-4 h-4" /> Export CSV
         </a>
-        
+
         <.link
           navigate={~p"/dashboard"}
           class="gh-btn gh-btn-secondary flex items-center gap-2"
         >
           <.icon name="hero-chart-bar" class="w-4 h-4" /> Dashboard
         </.link>
-        
+
         <.link
           navigate={~p"/activities/new"}
           class="gh-btn gh-btn-secondary flex items-center gap-2"
         >
           <.icon name="hero-clock" class="w-4 h-4" /> New Activity
         </.link>
-        
+
         <.link
           navigate={~p"/leads/new"}
           class="gh-btn gh-btn-primary flex items-center gap-2"
@@ -40,7 +40,7 @@
       </div>
     </div>
   </div>
-  
+
   <div class="px-6 py-6">
     <!-- Filters -->
     <div class="gh-surface gh-border rounded-lg p-4 mb-6 border">
@@ -54,7 +54,7 @@
             <% end %>
           </select>
         </div>
-        
+
         <div class="flex-1">
           <label class="block gh-text-secondary text-sm font-medium mb-2">Source</label>
           <select name="source" class="gh-input" value={@filters.source || ""}>
@@ -66,7 +66,7 @@
             <% end %>
           </select>
         </div>
-        
+
         <div class="flex items-center gap-2 pb-2">
           <input
             type="checkbox"
@@ -90,7 +90,7 @@
                 <h3 class="font-semibold text-sm gh-text-primary">
                   {stage_label(stage, @stages_list)}
                 </h3>
-                
+
                 <span class="gh-badge px-2 py-1 rounded-full text-xs font-medium">
                   {Map.get(@stage_counts, stage, 0)}
                 </span>
@@ -139,7 +139,7 @@
                           </button>
                         <% end %>
                       </div>
-                      
+
                       <button
                         phx-click="toggle_starred"
                         phx-value-id={lead.id}
@@ -158,7 +158,7 @@
                         <.icon name="hero-envelope" class="w-3.5 h-3.5" />
                         <span class="truncate">{lead.email}</span>
                       </div>
-                      
+
                       <%= if lead.budget do %>
                         <div class="flex items-center gap-1.5">
                           <.icon name="hero-currency-euro" class="w-3.5 h-3.5" />
@@ -167,7 +167,7 @@
                           </span>
                         </div>
                       <% end %>
-                      
+
                       <div class="flex items-center gap-1.5">
                         <.icon name="hero-tag" class="w-3.5 h-3.5" />
                         <span class="capitalize">
@@ -184,14 +184,14 @@
                               {get_initials(lead.owner)}
                             </span>
                           </div>
-                           <span class="text-xs gh-text-secondary">{lead.owner}</span>
+                          <span class="text-xs gh-text-secondary">{lead.owner}</span>
                         <% else %>
                           <span class="text-xs gh-text-tertiary">Unassigned</span>
                         <% end %>
                       </div>
-                      
+
                       <span class="text-xs gh-text-tertiary">
-                        {format_date(lead.last_activity_at)}
+                        {format_date_short(lead.last_activity_at)}
                       </span>
                     </div>
                     <!-- Drag indicator -->

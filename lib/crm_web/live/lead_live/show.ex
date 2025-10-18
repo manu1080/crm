@@ -5,6 +5,7 @@ defmodule CrmWeb.LeadLive.Show do
   alias Crm.Activities
   alias Crm.Sales.Activity
   import CrmWeb.ActivityHelpers
+  import CrmWeb.FormatHelpers
 
   @impl true
   def mount(_params, _session, socket) do
@@ -24,7 +25,10 @@ defmodule CrmWeb.LeadLive.Show do
      socket
      |> assign(:page_title, "Lead Details")
      |> assign(:lead, lead)
-     |> assign(:activity_form, to_form(Activities.change_activity(%Activity{lead_id: String.to_integer(id)})))}
+     |> assign(
+       :activity_form,
+       to_form(Activities.change_activity(%Activity{lead_id: String.to_integer(id)}))
+     )}
   end
 
   @impl true
@@ -54,7 +58,10 @@ defmodule CrmWeb.LeadLive.Show do
          socket
          |> assign(:lead, lead)
          |> assign(:show_activity_form, false)
-         |> assign(:activity_form, to_form(Activities.change_activity(%Activity{lead_id: lead.id})))
+         |> assign(
+           :activity_form,
+           to_form(Activities.change_activity(%Activity{lead_id: lead.id}))
+         )
          |> put_flash(:info, "Activity created successfully")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -88,34 +95,4 @@ defmodule CrmWeb.LeadLive.Show do
 
   @impl true
   def handle_info(_msg, socket), do: {:noreply, socket}
-
-  defp format_budget(amount) do
-    amount
-    |> to_string()
-    |> String.reverse()
-    |> String.graphemes()
-    |> Enum.chunk_every(3)
-    |> Enum.join(".")
-    |> String.reverse()
-    |> then(&"€#{&1}")
-  end
-
-  defp format_date(nil), do: "-"
-
-  defp format_date(datetime) do
-    Calendar.strftime(datetime, "%d/%m/%Y")
-  end
-
-  defp format_relative_time(datetime) do
-    now = DateTime.utc_now()
-    diff_seconds = DateTime.diff(now, datetime, :second)
-
-    cond do
-      diff_seconds < 60 -> "Just now"
-      diff_seconds < 3600 -> "#{div(diff_seconds, 60)}m ago"
-      diff_seconds < 86400 -> "#{div(diff_seconds, 3600)}h ago"
-      diff_seconds < 604_800 -> "#{div(diff_seconds, 86400)}d ago"
-      true -> format_date(datetime)
-    end
-  end
 end
