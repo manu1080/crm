@@ -1,4 +1,39 @@
 <main class="min-h-screen gh-bg-primary">
-  <.flash_group flash={@flash} />
-  <%= @inner_content %>
+  <!-- Top Navigation Bar -->
+  <nav class="gh-surface gh-border-b sticky top-0 z-50">
+    <div class="flex items-center justify-between px-6 py-3">
+      <div class="flex items-center gap-6">
+        <.link navigate={~p"/"} class="text-xl font-semibold gh-text-primary hover:opacity-80">
+          CRM
+        </.link>
+        <div class="flex gap-1">
+          <.link navigate={~p"/"} class="gh-btn gh-btn-ghost text-sm">
+            <.icon name="hero-queue-list" class="w-4 h-4" /> Pipeline
+          </.link>
+          <.link navigate={~p"/dashboard"} class="gh-btn gh-btn-ghost text-sm">
+            <.icon name="hero-chart-bar" class="w-4 h-4" /> Dashboard
+          </.link>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-4">
+        <%= if @current_user do %>
+          <div class="flex items-center gap-3">
+            <span class="gh-text-secondary text-sm">
+              {@current_user.name}
+              <span class="gh-text-tertiary">({@current_user.role.label})</span>
+            </span>
+            <.link
+              href={~p"/logout"}
+              method="delete"
+              class="gh-btn gh-btn-secondary text-sm"
+            >
+              <.icon name="hero-arrow-right-on-rectangle" class="w-4 h-4" /> Logout
+            </.link>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </nav>
+   <.flash_group flash={@flash} /> {@inner_content}
 </main>

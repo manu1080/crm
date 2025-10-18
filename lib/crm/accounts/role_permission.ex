@@ -10,7 +10,6 @@ defmodule Crm.Accounts.RolePermission do
   - `limited`: Has limited access (specific to resource/action)
   """
   use Ecto.Schema
-  import Ecto.Changeset
 
   schema "role_permissions" do
     field :resource, :string
