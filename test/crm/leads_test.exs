@@ -7,7 +7,6 @@ defmodule Crm.LeadsTest do
   alias Crm.Settings.Source
 
   setup do
-    # Create stages
     stages = [
       %{name: "new", label: "New", order: 1},
       %{name: "contacted", label: "Contacted", order: 2},
@@ -23,7 +22,6 @@ defmodule Crm.LeadsTest do
       |> Repo.insert!()
     end)
 
-    # Create source
     source =
       %Source{}
       |> Source.changeset(%{name: "website", description: "Website leads"})

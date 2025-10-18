@@ -7,7 +7,6 @@ defmodule Crm.ActivitiesTest do
 
   describe "auto_stage_transition/2" do
     setup do
-      # Create stages
       stages = [
         %{name: "new", label: "New", order: 0, active: true},
         %{name: "contacted", label: "Contacted", order: 1, active: true},
@@ -27,7 +26,6 @@ defmodule Crm.ActivitiesTest do
         |> Repo.insert!()
       end)
 
-      # Create a test source
       source =
         Crm.Repo.insert!(%Crm.Settings.Source{
           name: "test_source",
