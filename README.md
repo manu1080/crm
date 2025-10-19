@@ -38,7 +38,6 @@ cd crm
 
 # Install dependencies
 mix deps.get
-cd assets && npm install && cd ..
 
 # Setup database
 mix ecto.setup
