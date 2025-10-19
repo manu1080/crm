@@ -43,6 +43,29 @@ defmodule CrmWeb.LeadLive.Show do
   end
 
   @impl true
+  def handle_event("quick_action", %{"type" => type}, socket) do
+    # Create activity with the quick action type
+    activity_params = %{
+      "lead_id" => socket.assigns.lead.id,
+      "type" => type,
+      "description" => "Quick action: #{Activity.type_label(type)}"
+    }
+
+    case Activities.create_activity(activity_params) do
+      {:ok, _activity} ->
+        lead = Leads.get_lead!(socket.assigns.lead.id)
+
+        {:noreply,
+         socket
+         |> assign(:lead, lead)
+         |> put_flash(:info, "#{Activity.type_label(type)} recorded successfully")}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, "Failed to record activity")}
+    end
+  end
+
+  @impl true
   def handle_event("validate_activity", %{"activity" => activity_params}, socket) do
     changeset =
       %Activity{lead_id: socket.assigns.lead.id}

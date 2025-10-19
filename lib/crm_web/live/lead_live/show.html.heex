@@ -247,27 +247,45 @@
         </div>
         
 <!-- Actions -->
-        <div class="gh-surface gh-border rounded-lg border p-6">
-          <h3 class="text-sm font-semibold gh-text-primary mb-4">Quick Actions</h3>
+        <%= if @can_create_activity do %>
+          <div class="gh-surface gh-border rounded-lg border p-6">
+            <h3 class="text-sm font-semibold gh-text-primary mb-4">Quick Actions</h3>
 
-          <div class="space-y-2">
-            <button class="w-full gh-btn-secondary px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2">
-              <.icon name="hero-phone" class="w-4 h-4" /> Log Call
-            </button>
+            <div class="space-y-2">
+              <button
+                phx-click="quick_action"
+                phx-value-type="call_logged"
+                class="w-full gh-btn-secondary px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 hover:gh-btn-secondary-hover transition"
+              >
+                <.icon name="hero-phone" class="w-4 h-4" /> Log Call
+              </button>
 
-            <button class="w-full gh-btn-secondary px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2">
-              <.icon name="hero-envelope" class="w-4 h-4" /> Send Email
-            </button>
+              <button
+                phx-click="quick_action"
+                phx-value-type="email_sent"
+                class="w-full gh-btn-secondary px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 hover:gh-btn-secondary-hover transition"
+              >
+                <.icon name="hero-envelope" class="w-4 h-4" /> Send Email
+              </button>
 
-            <button class="w-full gh-btn-secondary px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2">
-              <.icon name="hero-calendar" class="w-4 h-4" /> Schedule Meeting
-            </button>
+              <button
+                phx-click="quick_action"
+                phx-value-type="meeting_completed"
+                class="w-full gh-btn-secondary px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 hover:gh-btn-secondary-hover transition"
+              >
+                <.icon name="hero-calendar" class="w-4 h-4" /> Schedule Meeting
+              </button>
 
-            <button class="w-full gh-btn-secondary px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2">
-              <.icon name="hero-document-text" class="w-4 h-4" /> Add Note
-            </button>
+              <button
+                phx-click="quick_action"
+                phx-value-type="note_added"
+                class="w-full gh-btn-secondary px-4 py-2 rounded-md text-sm font-medium flex items-center justify-center gap-2 hover:gh-btn-secondary-hover transition"
+              >
+                <.icon name="hero-document-text" class="w-4 h-4" /> Add Note
+              </button>
+            </div>
           </div>
-        </div>
+        <% end %>
         
 <!-- Danger Zone -->
         <div class="gh-surface border border-red-200 dark:border-red-900 rounded-lg p-6">
