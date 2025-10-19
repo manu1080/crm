@@ -47,12 +47,11 @@ users = [
 
 Enum.each(users, fn u ->
   %User{}
-  |> User.changeset(%{
+  |> User.registration_changeset(%{
     name: u.name,
     email: u.email,
     password: u.password,
-    role_id: role_ids[u.role],
-    active: true
+    role_id: role_ids[u.role]
   })
   |> Repo.insert!()
 end)
@@ -1102,4 +1101,84 @@ Enum.each(activities, fn activity ->
 end)
 
 IO.puts("✅ #{length(activities)} activities")
+
+# Seed Role Permissions
+alias Crm.Accounts.RolePermission
+
+IO.puts("🔐 Seeding role permissions...")
+
+Repo.delete_all(RolePermission)
+
+now = NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+
+# Admin permissions - full access to everything
+admin_permissions = [
+  # Leads
+  %{role_id: role_ids["admin"], resource: "leads", action: "index", scope: "all"},
+  %{role_id: role_ids["admin"], resource: "leads", action: "show", scope: "all"},
+  %{role_id: role_ids["admin"], resource: "leads", action: "create", scope: "all"},
+  %{role_id: role_ids["admin"], resource: "leads", action: "update", scope: "all"},
+  %{role_id: role_ids["admin"], resource: "leads", action: "delete", scope: "all"},
+  %{role_id: role_ids["admin"], resource: "leads", action: "export", scope: "all"},
+  # Activities
+  %{role_id: role_ids["admin"], resource: "activities", action: "create", scope: "all"},
+  %{role_id: role_ids["admin"], resource: "activities", action: "update", scope: "all"},
+  %{role_id: role_ids["admin"], resource: "activities", action: "delete", scope: "all"},
+  # Dashboard
+  %{role_id: role_ids["admin"], resource: "dashboard", action: "view", scope: "all"}
+]
+
+# Sales permissions - same as admin
+sales_permissions = [
+  # Leads
+  %{role_id: role_ids["sales"], resource: "leads", action: "index", scope: "all"},
+  %{role_id: role_ids["sales"], resource: "leads", action: "show", scope: "all"},
+  %{role_id: role_ids["sales"], resource: "leads", action: "create", scope: "all"},
+  %{role_id: role_ids["sales"], resource: "leads", action: "update", scope: "all"},
+  %{role_id: role_ids["sales"], resource: "leads", action: "delete", scope: "all"},
+  %{role_id: role_ids["sales"], resource: "leads", action: "export", scope: "all"},
+  # Activities
+  %{role_id: role_ids["sales"], resource: "activities", action: "create", scope: "all"},
+  %{role_id: role_ids["sales"], resource: "activities", action: "update", scope: "all"},
+  %{role_id: role_ids["sales"], resource: "activities", action: "delete", scope: "all"},
+  # Dashboard
+  %{role_id: role_ids["sales"], resource: "dashboard", action: "view", scope: "all"}
+]
+
+# Marketing permissions - view all, create, export (no edit/delete)
+marketing_permissions = [
+  # Leads
+  %{role_id: role_ids["marketing"], resource: "leads", action: "index", scope: "all"},
+  %{role_id: role_ids["marketing"], resource: "leads", action: "show", scope: "all"},
+  %{role_id: role_ids["marketing"], resource: "leads", action: "create", scope: "all"},
+  %{role_id: role_ids["marketing"], resource: "leads", action: "export", scope: "all"},
+  # Dashboard
+  %{role_id: role_ids["marketing"], resource: "dashboard", action: "view", scope: "all"}
+]
+
+# Capture permissions - view all, create, update own only
+capture_permissions = [
+  # Leads
+  %{role_id: role_ids["capture"], resource: "leads", action: "index", scope: "all"},
+  %{role_id: role_ids["capture"], resource: "leads", action: "show", scope: "all"},
+  %{role_id: role_ids["capture"], resource: "leads", action: "create", scope: "all"},
+  %{role_id: role_ids["capture"], resource: "leads", action: "update", scope: "own"},
+  # Dashboard
+  %{role_id: role_ids["capture"], resource: "dashboard", action: "view", scope: "all"}
+]
+
+# Insert all permissions
+all_permissions =
+  admin_permissions ++ sales_permissions ++ marketing_permissions ++ capture_permissions
+
+Enum.each(all_permissions, fn perm ->
+  Repo.insert!(%RolePermission{
+    role_id: perm.role_id,
+    resource: perm.resource,
+    action: perm.action,
+    scope: perm.scope
+  })
+end)
+
+IO.puts("✅ #{length(all_permissions)} role permissions")
 IO.puts("🎉 Done!")
