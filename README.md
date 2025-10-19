@@ -53,15 +53,18 @@ Now visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 This project includes comprehensive documentation covering different aspects of the CRM:
 
-### � Security & Access Control
+### 🔐 Security & Access Control
 - **[Role Permissions](role_permission.md)** - User roles, permission matrix, and access control rules
 
-### �📋 Business Rules
+###  Business Rules
 - **[Business Rules](business%20rules.md)** - Complete sales pipeline stages, lead activities, and automatic stage transitions
 
 ### 📊 Analytics & Reporting
 - **[Sales Dashboard](sales_dashboard.md)** - Dashboard metrics, charts, filters, and real-time analytics
 - **[Export Reports](report.md)** - CSV export specification, column definitions, and data export features
+
+### 🚀 Future Enhancements
+- **[Improvements Roadmap](improvements.md)** - Planned features and enhancements for future releases
 
 ## Development
 

@@ -62,11 +62,11 @@
 ## 🟡 Capture - Lead capture only
 
 ### Pages they CAN visit:
-- ✅ `/` - Lead pipeline (own leads only)
-- ✅ `/leads` - Lead pipeline (own leads only)
+- ✅ `/` - Lead pipeline
+- ✅ `/leads` - Lead pipeline
 - ✅ `/leads/new` - Create new lead
-- ✅ `/leads/:id` - View lead detail (own leads only)
-- ✅ `/leads/:id/edit` - Edit lead (own leads only)
+- ✅ `/leads/:id` - View lead detail
+- ✅ `/leads/:id/edit` - Edit lead
 
 ### Pages they CANNOT visit:
 - ❌ `/activities/new` - Create activity
