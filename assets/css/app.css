@@ -249,6 +249,19 @@
   vertical-align: middle;
 }
 
+/* Links */
+.gh-link {
+  color: #f85149;
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s;
+}
+
+.gh-link:hover {
+  color: #ff7b72;
+}
+
 .gh-canvas { background-color: var(--gh-canvas); }
 .gh-surface { background-color: var(--gh-surface); }
 .gh-border { border-color: var(--gh-border); }

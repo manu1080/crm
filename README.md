@@ -26,7 +26,16 @@ A lightweight CRM for managing investment leads through a sales funnel, built wi
 ### Prerequisites
 
 - Elixir 1.18+ and Erlang/OTP 27+
-- PostgreSQL 14+
+- PostgreSQL 14+ with a database user configured
+  - Create a PostgreSQL user with database creation privileges:
+    ```bash
+    # On Linux/Mac
+    sudo -u postgres createuser -s postgres
+    
+    # Or connect to PostgreSQL and run:
+    CREATE USER postgres WITH PASSWORD 'postgres' CREATEDB;
+    ```
+  - Update `config/dev.exs` with your database credentials if different
 - Node.js 18+ (for assets)
 
 ### Installation
