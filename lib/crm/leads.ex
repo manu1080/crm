@@ -149,6 +149,24 @@ defmodule Crm.Leads do
   end
 
   @doc """
+  Deletes a lead.
+
+  ## Examples
+
+      iex> delete_lead(lead)
+      {:ok, %Lead{}}
+
+      iex> delete_lead(lead)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_lead(%Lead{} = lead) do
+    lead
+    |> Repo.delete()
+    |> broadcast(:lead_deleted)
+  end
+
+  @doc """
   Changes the stage of a lead by stage name and updates last_activity_at.
 
   ## Examples

@@ -76,6 +76,22 @@ defmodule CrmWeb.LeadLive.Show do
   end
 
   @impl true
+  def handle_event("delete_lead", _params, socket) do
+    lead = socket.assigns.lead
+
+    case Leads.delete_lead(lead) do
+      {:ok, _lead} ->
+        {:noreply,
+         socket
+         |> put_flash(:info, "Lead deleted successfully")
+         |> push_navigate(to: ~p"/leads")}
+
+      {:error, _changeset} ->
+        {:noreply, put_flash(socket, :error, "Failed to delete lead")}
+    end
+  end
+
+  @impl true
   def handle_event("save_activity", %{"activity" => activity_params}, socket) do
     activity_params = Map.put(activity_params, "lead_id", socket.assigns.lead.id)
 
